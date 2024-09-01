@@ -19,7 +19,7 @@ class FormularioPptxDesign():
 
         # Primer Label con texto
         self.labelTitulo = tk.Label(
-            self.barra_superior, text="Página en construcción")
+            self.barra_superior, text="Generar Constancias")
         self.labelTitulo.config(fg="#222d33", font=("Roboto", 30), bg=COLOR_CUERPO_PRINCIPAL)
         self.labelTitulo.pack(side=tk.TOP, fill='both', expand=True)
 
