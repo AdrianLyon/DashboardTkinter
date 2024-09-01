@@ -1,6 +1,6 @@
-''' from formularios.form_maestro_design import FormularioMaestroDesign
+from formularios.form_maestro_design import FormularioMaestroDesign
 
 app = FormularioMaestroDesign()
-app.mainloop() '''
+app.mainloop() 
 
 

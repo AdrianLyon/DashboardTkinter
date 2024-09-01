@@ -7,6 +7,9 @@ import util.util_imagenes as util_img
 from formularios.form_graficas_design import FormularioGraficasDesign
 from formularios.form_sitio_construccion import FormularioSitioConstruccionDesign
 from formularios.form_info_design import FormularioInfoDesign
+from formularios.form_document_design import FormularioDocument
+from formularios.form_excel_design import FormularioExcelDesign
+from formularios.form_pptx_design import FormularioPptxDesign
 
 class FormularioMaestroDesign(tk.Tk):
 
@@ -84,9 +87,9 @@ class FormularioMaestroDesign(tk.Tk):
 
         buttons_info = [
             ("Dashboard", "\uf109", self.buttonDashBoard,self.abrir_panel_graficas ),
-            ("Documentos", "\uf1c2", self.buttonProfile,self.abrir_panel_en_construccion),
-            ("Excel", "\uf1c3", self.buttonPicture,self.abrir_panel_en_construccion),
-            ("Constancias", "\uf1c4", self.buttonSettings,self.abrir_panel_en_construccion),
+            ("Documentos", "\uf1c2", self.buttonProfile,self.abrir_panel_document),
+            ("Excel", "\uf1c3", self.buttonPicture,self.abrir_panel_excel),
+            ("Constancias", "\uf1c4", self.buttonSettings,self.abrir_panel_pptx),
             ("Info", "\uf129", self.buttonInfo,self.abrir_panel_info),
         ]
 
@@ -133,6 +136,18 @@ class FormularioMaestroDesign(tk.Tk):
     def abrir_panel_en_construccion(self):   
         self.limpiar_panel(self.cuerpo_principal)     
         FormularioSitioConstruccionDesign(self.cuerpo_principal,self.img_sitio_construccion) 
+    
+    def abrir_panel_document(self):   
+        self.limpiar_panel(self.cuerpo_principal)     
+        FormularioDocument(self.cuerpo_principal)
+
+    def abrir_panel_excel(self):   
+        self.limpiar_panel(self.cuerpo_principal)     
+        FormularioExcelDesign(self.cuerpo_principal)
+    
+    def abrir_panel_pptx(self):   
+        self.limpiar_panel(self.cuerpo_principal)     
+        FormularioPptxDesign(self.cuerpo_principal)
 
     def abrir_panel_info(self):           
         FormularioInfoDesign()                    
