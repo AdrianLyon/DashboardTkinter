@@ -59,15 +59,24 @@ class PresentationGeneratorApp(tk.Tk):
             # Load the PowerPoint template
             prs = Presentation(self.ppt_template)
             
-            # Replace text in slides with context data
+            # Replace text in slides with context data, preserving formatting
             for slide in prs.slides:
                 for shape in slide.shapes:
                     if not shape.has_text_frame:
                         continue
-                    text = shape.text
-                    for key, value in context.items():
-                        if f"{{{key}}}" in text:
-                            shape.text = text.replace(f"{{{key}}}", value)
+                    text_frame = shape.text_frame
+                    for paragraph in text_frame.paragraphs:
+                        full_text = "".join([run.text for run in paragraph.runs])  # Reconstruir el texto completo del párrafo
+                        for key, value in context.items():
+                            if f"{{{key}}}" in full_text:
+                                full_text = full_text.replace(f"{{{key}}}", value)
+
+                        # Actualizar cada run con el nuevo texto
+                        current_pos = 0
+                        for run in paragraph.runs:
+                            run_len = len(run.text)
+                            run.text = full_text[current_pos:current_pos + run_len]
+                            current_pos += run_len
 
             # Save the modified presentation
             output_path = filedialog.asksaveasfilename(
@@ -80,6 +89,8 @@ class PresentationGeneratorApp(tk.Tk):
                 messagebox.showinfo("Success", f"Presentation saved successfully: {output_path}")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")
+
+
 
 if __name__ == "__main__":
     app = PresentationGeneratorApp()
