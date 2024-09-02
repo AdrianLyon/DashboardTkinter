@@ -10,6 +10,7 @@ from formularios.form_info_design import FormularioInfoDesign
 from formularios.form_document_design import FormularioDocument
 from formularios.form_excel_design import FormularioExcelDesign
 from formularios.form_pptx_design import FormularioPptxDesign
+from formularios.form_excel_pptx_design import BatchPresentationGeneratorApp
 
 class FormularioMaestroDesign(tk.Tk):
 
@@ -84,13 +85,14 @@ class FormularioMaestroDesign(tk.Tk):
         self.buttonPicture = tk.Button(self.menu_lateral)
         self.buttonInfo = tk.Button(self.menu_lateral)        
         self.buttonSettings = tk.Button(self.menu_lateral)
+        self.buttoneSettings = tk.Button(self.menu_lateral)
 
         buttons_info = [
             ("Dashboard", "\uf109", self.buttonDashBoard,self.abrir_panel_graficas ),
             ("Documentos", "\uf1c2", self.buttonProfile,self.abrir_panel_document),
-            ("Excel", "\uf1c3", self.buttonPicture,self.abrir_panel_excel),
+            ("Documentos Excel", "\uf1c3", self.buttonPicture,self.abrir_panel_excel),
             ("Constancias", "\uf1c4", self.buttonSettings,self.abrir_panel_pptx),
-            ("Info", "\uf129", self.buttonInfo,self.abrir_panel_info),
+            ("Constancias Excel", "\uf1c4", self.buttoneSettings,self.abrir_panel_excel_pptx)
         ]
 
         for text, icon, button,comando in buttons_info:
@@ -148,6 +150,10 @@ class FormularioMaestroDesign(tk.Tk):
     def abrir_panel_pptx(self):   
         self.limpiar_panel(self.cuerpo_principal)     
         FormularioPptxDesign(self.cuerpo_principal)
+
+    def abrir_panel_excel_pptx(self):   
+        self.limpiar_panel(self.cuerpo_principal)     
+        BatchPresentationGeneratorApp(self.cuerpo_principal)
 
     def abrir_panel_info(self):           
         FormularioInfoDesign()                    
