@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk
 from pptx import Presentation
+from pptx_replace import replace_text,replace_picture
 
 class PresentationGeneratorApp(tk.Tk):
     def __init__(self):
@@ -18,7 +19,9 @@ class PresentationGeneratorApp(tk.Tk):
             "nombre": tk.StringVar(),
             "curp": tk.StringVar(),
             "categoria": tk.StringVar(),
-            "curso": tk.StringVar()
+            "curso": tk.StringVar(),
+            "folio": tk.StringVar(),
+            "imagen_nueva": tk.StringVar()
         }
 
         row = 0
@@ -34,6 +37,10 @@ class PresentationGeneratorApp(tk.Tk):
         # Button to generate pptx
         self.btn_generate = ttk.Button(self, text="Generate Presentation", command=self.generate_presentation)
         self.btn_generate.grid(row=row+1, column=0, padx=10, pady=10, columnspan=2)
+        
+        # Botón para seleccionar la imagen
+        self.btn_image = ttk.Button(self, text="Select Image", command=self.select_image)
+        self.btn_image.grid(row=row, column=0, padx=10, pady=5, columnspan=2)
 
         self.ppt_template = None
 
@@ -48,39 +55,47 @@ class PresentationGeneratorApp(tk.Tk):
         else:
             messagebox.showwarning("No File Selected", "Please select a PPTX template to proceed.")
 
+    def select_image(self):
+        file_path = filedialog.askopenfilename(
+            title="Select Image",
+            filetypes=(("Image Files", "*.png;*.jpg;*.jpeg;*.bmp;*.gif"), ("All Files", "*.*"))
+        )
+        if file_path:
+            self.fields["imagen_nueva"].set(file_path)
+            messagebox.showinfo("Image Selected", f"Selected Image: {file_path}")
+        else:
+            messagebox.showwarning("No File Selected", "Please select an image to proceed.")
+
     def generate_presentation(self):
         if not self.ppt_template:
             messagebox.showerror("Error", "Please select a PPTX template before generating the presentation.")
             return
 
-        context = {key.lower().replace(" ", "_"): var.get() for key, var in self.fields.items()}
+        # Generar el contexto, asegurándonos de que todas las entradas sean cadenas de texto
+        context = {key.lower().replace(" ", "_"): str(var.get()) for key, var in self.fields.items()}
         
         try:
-            # Load the PowerPoint template
             prs = Presentation(self.ppt_template)
-            
-            # Replace text in slides with context data, preserving formatting
-            for slide in prs.slides:
-                for shape in slide.shapes:
-                    if not shape.has_text_frame:
-                        continue
-                    text_frame = shape.text_frame
-                    for paragraph in text_frame.paragraphs:
-                        full_text = "".join([run.text for run in paragraph.runs])  # Reconstruir el texto completo del párrafo
-                        print(f"este es full text: {full_text}")
-                       # print(f"este es run text: {run.text}")
-                        for key, value in context.items():
-                            if f"{{{key}}}" in full_text:
-                                full_text = full_text.replace(f"{{{key}}}", value)
 
-                        # Actualizar cada run con el nuevo texto
-                        current_pos = 0
-                        for run in paragraph.runs:
-                            run_len = len(run.text)
-                            run.text = full_text[current_pos:current_pos + run_len]
-                            current_pos += run_len
+            # Reemplazar el texto en las diapositivas
+            for key, value in context.items():
+                replace_text(prs, f"{{{key}}}", value)
 
-            # Save the modified presentation
+            # Reemplazar la imagen si se ha seleccionado una
+            image_path = self.fields["imagen_nueva"].get()
+            if image_path:
+                for slide in prs.slides:
+                    for shape in slide.shapes:
+                        if shape.has_text_frame:
+                            for paragraph in shape.text_frame.paragraphs:
+                                for run in paragraph.runs:
+                                    if "{imagen_nueva}" in run.text:
+                                        run.text = ""  # Eliminar el marcador
+                                        # Insertar la imagen en la posición del marcador
+                                        slide.shapes.add_picture(image_path, shape.left, shape.top, shape.width, shape.height)
+                                        break
+
+            # Guardar la presentación modificada
             output_path = filedialog.asksaveasfilename(
                 defaultextension=".pptx",
                 filetypes=(("PowerPoint Files", "*.pptx"), ("All Files", "*.*")),
@@ -90,7 +105,8 @@ class PresentationGeneratorApp(tk.Tk):
                 prs.save(output_path)
                 messagebox.showinfo("Success", f"Presentation saved successfully: {output_path}")
         except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {e}")
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
 
 
 

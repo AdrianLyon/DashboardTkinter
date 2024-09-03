@@ -2,6 +2,7 @@ import customtkinter as ctk
 from config import COLOR_CUERPO_PRINCIPAL
 from tkinter import filedialog, messagebox
 from pptx import Presentation
+from pptx_replace import replace_text
 
 class FormularioPptxDesign():
 
@@ -30,8 +31,9 @@ class FormularioPptxDesign():
         self.fields = {
             "Nombre": ctk.StringVar(),
             "CURP": ctk.StringVar(),
-            "Categoría": ctk.StringVar(),
-            "Curso": ctk.StringVar()
+            "Categoria": ctk.StringVar(),
+            "Curso": ctk.StringVar(),
+            "folio": ctk.StringVar()
         }
 
         row = 0
@@ -66,32 +68,19 @@ class FormularioPptxDesign():
             messagebox.showerror("Error", "Please select a PPTX template before generating the presentation.")
             return
 
-        context = {key.lower().replace(" ", "_"): var.get() for key, var in self.fields.items()}
+        # Generar el contexto, asegurándonos de que todas las entradas sean cadenas de texto
+        context = {key.lower().replace(" ", "_"): str(var.get()) for key, var in self.fields.items()}
         
         try:
-            # Load the PowerPoint template
             prs = Presentation(self.ppt_template)
-            
-            # Replace text in slides with context data, preserving formatting
-            for slide in prs.slides:
-                for shape in slide.shapes:
-                    if not shape.has_text_frame:
-                        continue
-                    text_frame = shape.text_frame
-                    for paragraph in text_frame.paragraphs:
-                        full_text = "".join([run.text for run in paragraph.runs])  # Reconstruir el texto completo del párrafo
-                        for key, value in context.items():
-                            if f"{{{key}}}" in full_text:
-                                full_text = full_text.replace(f"{{{key}}}", value)
 
-                        # Actualizar cada run con el nuevo texto
-                        current_pos = 0
-                        for run in paragraph.runs:
-                            run_len = len(run.text)
-                            run.text = full_text[current_pos:current_pos + run_len]
-                            current_pos += run_len
+            # Reemplazar el texto en las diapositivas
+            for key, value in context.items():
+                replace_text(prs, f"{{{key}}}", value)
 
-            # Save the modified presentation
+           
+
+            # Guardar la presentación modificada
             output_path = filedialog.asksaveasfilename(
                 defaultextension=".pptx",
                 filetypes=(("PowerPoint Files", "*.pptx"), ("All Files", "*.*")),
@@ -101,5 +90,5 @@ class FormularioPptxDesign():
                 prs.save(output_path)
                 messagebox.showinfo("Success", f"Presentation saved successfully: {output_path}")
         except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {e}")
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
