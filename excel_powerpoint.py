@@ -77,17 +77,18 @@ class BatchPresentationGeneratorApp(tk.Tk):
                             continue
                         text_frame = shape.text_frame
                         for paragraph in text_frame.paragraphs:
-                            full_text = "".join([run.text for run in paragraph.runs])
-                            for key, value in context.items():
-                                if f"{{{key}}}" in full_text:
-                                    full_text = full_text.replace(f"{{{key}}}", value)
+                            for run in paragraph.runs:
+                                full_text = run.text 
+                                for key, value in context.items():
+                                    if f"{{{key}}}" in full_text:
+                                        full_text = full_text.replace(f"{{{key}}}", value)
 
-                            # Update each run with the new text
+                            """ # Update each run with the new text
                             current_pos = 0
                             for run in paragraph.runs:
                                 run_len = len(run.text)
                                 run.text = full_text[current_pos:current_pos + run_len]
-                                current_pos += run_len
+                                current_pos += run_len """
 
                 output_path = f"generated_presentation_{index}.pptx"
                 prs.save(output_path)

@@ -1,4 +1,6 @@
 {
     "admin": "12345",
-    "user1": "mypassword"
+    "user1": "mypassword",
+    "test": "123",
+    "usuario1": "123"
 }

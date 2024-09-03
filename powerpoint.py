@@ -67,6 +67,8 @@ class PresentationGeneratorApp(tk.Tk):
                     text_frame = shape.text_frame
                     for paragraph in text_frame.paragraphs:
                         full_text = "".join([run.text for run in paragraph.runs])  # Reconstruir el texto completo del párrafo
+                        print(f"este es full text: {full_text}")
+                       # print(f"este es run text: {run.text}")
                         for key, value in context.items():
                             if f"{{{key}}}" in full_text:
                                 full_text = full_text.replace(f"{{{key}}}", value)
