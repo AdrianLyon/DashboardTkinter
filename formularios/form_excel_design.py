@@ -19,7 +19,7 @@ class FormularioExcelDesign():
         self.barra_inferior.pack(side=tk.BOTTOM, fill='both', expand=True)
 
         self.labelTitulo = ctk.CTkLabel(
-            self.barra_superior, text="Página en construcción", font=ctk.CTkFont(size=30, weight="bold"))
+            self.barra_superior, text="Generar documento desde un archivo Excel", font=ctk.CTkFont(size=30, weight="bold"))
         self.labelTitulo.pack(side=tk.TOP, fill='both', expand=True, pady=10)
 
         self.create_widgets()
