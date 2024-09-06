@@ -21,7 +21,7 @@ class FormularioPptxDesign():
 
         # Primer Label con texto
         self.labelTitulo = ctk.CTkLabel(
-            self.barra_superior, text="Generar Constancias", font=ctk.CTkFont(size=30, weight="bold"))
+            self.barra_superior, text="Generar Constancias desde formulario", font=ctk.CTkFont(size=30, weight="bold"))
         self.labelTitulo.pack(side=ctk.TOP, fill='both', expand=True, pady=10)
 
         self.create_widgets()
@@ -39,7 +39,17 @@ class FormularioPptxDesign():
         row = 0
         for label, var in self.fields.items():
             ctk.CTkLabel(self.barra_inferior, text=label).grid(row=row, column=0, sticky=ctk.W, padx=10, pady=5)
-            ctk.CTkEntry(self.barra_inferior, textvariable=var, width=250).grid(row=row, column=1, padx=10, pady=5)
+            entry = ctk.CTkEntry(self.barra_inferior, textvariable=var, width=250)
+
+            # Configurar validaciones específicas
+            if label == "Nombre":
+                self.add_placeholder(entry, "debes empezar con el apellido")  # Añadir placeholder
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
+            else:
+                # Convertir el texto a mayúsculas mientras se escribe
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
+
+            entry.grid(row=row, column=1, padx=10, pady=5)
             row += 1
 
         # Botón para abrir la plantilla pptx
@@ -51,6 +61,22 @@ class FormularioPptxDesign():
         self.btn_generate.grid(row=row+1, column=0, padx=10, pady=10, columnspan=2)
 
         self.ppt_template = None
+
+    def add_placeholder(self, entry, placeholder):
+        """Añadir placeholder al campo de texto."""
+        entry.insert(0, placeholder)
+        entry.bind("<FocusIn>", lambda event: self.clear_placeholder(entry, placeholder))
+        entry.bind("<FocusOut>", lambda event: self.add_back_placeholder(entry, placeholder))
+
+    def clear_placeholder(self, entry, placeholder):
+        """Eliminar placeholder cuando el campo está enfocado."""
+        if entry.get() == placeholder:
+            entry.delete(0, ctk.END)
+
+    def add_back_placeholder(self, entry, placeholder):
+        """Restaurar placeholder si el campo está vacío."""
+        if entry.get() == "":
+            entry.insert(0, placeholder)
 
     def open_template(self):
         file_path = filedialog.askopenfilename(
@@ -78,8 +104,6 @@ class FormularioPptxDesign():
             for key, value in context.items():
                 replace_text(prs, f"{{{key}}}", value)
 
-           
-
             # Guardar la presentación modificada
             output_path = filedialog.asksaveasfilename(
                 defaultextension=".pptx",
@@ -89,6 +113,14 @@ class FormularioPptxDesign():
             if output_path:
                 prs.save(output_path)
                 messagebox.showinfo("Success", f"Presentation saved successfully: {output_path}")
+                self.clear_form()  # Limpiar el formulario después de guardar
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+    def clear_form(self):
+        """Función para limpiar el formulario."""
+        for var in self.fields.values():
+            var.set("")  # Limpiar todos los campos
+
+    # Si es necesario, puedes agregar más métodos o ajustes aquí.
 

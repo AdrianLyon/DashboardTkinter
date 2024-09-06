@@ -21,7 +21,7 @@ class FormularioDocument():
 
         # Primer Label con texto
         self.labelTitulo = ctk.CTkLabel(
-            self.barra_superior, text="Generador de documentos", font=ctk.CTkFont(size=30, weight="bold"))
+            self.barra_superior, text="Generar documentos desde formulario", font=ctk.CTkFont(size=30, weight="bold"))
         self.labelTitulo.pack(side=tk.TOP, fill='both', expand=True, pady=10)
 
         # Crear widgets en la barra inferior
@@ -61,7 +61,7 @@ class FormularioDocument():
             
             # Configurar validaciones específicas
             if label == "Nombre":
-                entry.configure(placeholder_text="debes empezar con el apellido")
+                self.add_placeholder(entry, "debes empezar con el apellido")  # Añadir placeholder
                 entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
 
             elif label == "CURP":
@@ -91,6 +91,22 @@ class FormularioDocument():
 
         self.doc_template = None
     
+    def add_placeholder(self, entry, placeholder):
+        """Añadir placeholder al campo de texto."""
+        entry.insert(0, placeholder)
+        entry.bind("<FocusIn>", lambda event: self.clear_placeholder(entry, placeholder))
+        entry.bind("<FocusOut>", lambda event: self.add_back_placeholder(entry, placeholder))
+
+    def clear_placeholder(self, entry, placeholder):
+        """Eliminar placeholder cuando el campo está enfocado."""
+        if entry.get() == placeholder:
+            entry.delete(0, tk.END)
+
+    def add_back_placeholder(self, entry, placeholder):
+        """Restaurar placeholder si el campo está vacío."""
+        if entry.get() == "":
+            entry.insert(0, placeholder)
+
     def open_template(self):
         file_path = filedialog.askopenfilename(
             title="Select DOCX Template",
@@ -144,6 +160,7 @@ class FormularioDocument():
             var.set("")  # Limpiar todos los campos
 
     def only_numbers(self, P):
+        """Función para validar que solo se ingresen números en ciertos campos."""
         if P.isdigit() or P == "":
             return True
         return False

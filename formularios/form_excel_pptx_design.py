@@ -24,7 +24,7 @@ class BatchPresentationGeneratorApp():
 
         # Primer Label con texto
         self.labelTitulo = ctk.CTkLabel(
-            self.barra_superior, text="Generar Constancias", font=ctk.CTkFont(size=30, weight="bold"))
+            self.barra_superior, text="Generar Constancias desde un archivo Excel", font=ctk.CTkFont(size=30, weight="bold"))
         self.labelTitulo.pack(side=ctk.TOP, fill='both', expand=True, pady=10)
 
         self.create_widgets()
