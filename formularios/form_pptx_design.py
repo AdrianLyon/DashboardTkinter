@@ -46,7 +46,7 @@ class FormularioPptxDesign():
 
             # Configurar validaciones específicas
             if label == "Nombre":
-                self.add_placeholder(entry, "debes empezar con el apellido")  # Añadir placeholder
+                self.add_placeholder(entry, "Empezar con nombres")  # Añadir placeholder
                 entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
             else:
                 # Convertir el texto a mayúsculas mientras se escribe

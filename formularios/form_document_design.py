@@ -61,7 +61,7 @@ class FormularioDocument():
             
             # Configurar validaciones específicas
             if label == "Nombre":
-                self.add_placeholder(entry, "debes empezar con el apellido")  # Añadir placeholder
+                self.add_placeholder(entry, "Empezar con el apellido paterno")  # Añadir placeholder
                 entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
 
             elif label == "CURP":
@@ -82,11 +82,11 @@ class FormularioDocument():
                 column += 1
 
         # Botón para abrir la plantilla docx
-        self.btn_open = ctk.CTkButton(self.barra_inferior, text="Select Template", command=self.open_template)
+        self.btn_open = ctk.CTkButton(self.barra_inferior, text="Seleccionar Template", command=self.open_template)
         self.btn_open.grid(row=row+1, column=0, padx=10, pady=20, columnspan=4)
 
         # Botón para generar el documento docx
-        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Generate Document", command=self.generate_document)
+        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Generar Documento", command=self.generate_document)
         self.btn_generate.grid(row=row+2, column=0, padx=10, pady=10, columnspan=4)
 
         self.doc_template = None
@@ -109,7 +109,7 @@ class FormularioDocument():
 
     def open_template(self):
         file_path = filedialog.askopenfilename(
-            title="Select DOCX Template",
+            title="Seleccion el documento con el formato DOCX Template",
             filetypes=(("Word Documents", "*.docx"), ("All Files", "*.*"))
         )
         if file_path:

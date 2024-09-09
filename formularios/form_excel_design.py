@@ -25,7 +25,7 @@ class FormularioExcelDesign():
         self.create_widgets()
 
     def create_widgets(self):
-        self.btn_open_docx = ctk.CTkButton(self.barra_inferior, text="Select DOCX Template", command=self.open_docx_template)
+        self.btn_open_docx = ctk.CTkButton(self.barra_inferior, text="Seleccionar el documento DOCX Template", command=self.open_docx_template)
         self.btn_open_docx.grid(row=0, column=0, padx=10, pady=20, columnspan=2)
 
         self.btn_open_excel = ctk.CTkButton(self.barra_inferior, text="Select Excel File", command=self.open_excel_file)

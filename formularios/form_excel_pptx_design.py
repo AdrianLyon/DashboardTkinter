@@ -32,14 +32,14 @@ class BatchPresentationGeneratorApp():
 
     def create_widgets(self):
         # Buttons to open pptx template and excel file
-        self.btn_open_pptx = ctk.CTkButton(self.barra_inferior, text="Select PPTX Template", command=self.open_pptx_template)
+        self.btn_open_pptx = ctk.CTkButton(self.barra_inferior, text="Seleccionar el archivo powerpoint", command=self.open_pptx_template)
         self.btn_open_pptx.grid(row=0, column=0, padx=10, pady=20, columnspan=2)
 
-        self.btn_open_excel = ctk.CTkButton(self.barra_inferior, text="Select Excel File", command=self.open_excel_file)
+        self.btn_open_excel = ctk.CTkButton(self.barra_inferior, text="Seleccionar el archivo Excel", command=self.open_excel_file)
         self.btn_open_excel.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # Button to generate presentations
-        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Generate Presentations", command=self.generate_presentations)
+        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Generar Presentacion", command=self.generate_presentations)
         self.btn_generate.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
 
         self.pptx_template = None
@@ -47,7 +47,7 @@ class BatchPresentationGeneratorApp():
 
     def open_pptx_template(self):
         file_path = filedialog.askopenfilename(
-            title="Select PPTX Template",
+            title="Seleccionar archivo power point",
             filetypes=(("PowerPoint Files", "*.pptx"), ("All Files", "*.*"))
         )
         if file_path:
@@ -58,7 +58,7 @@ class BatchPresentationGeneratorApp():
 
     def open_excel_file(self):
         file_path = filedialog.askopenfilename(
-            title="Select Excel File",
+            title="Seleccionar el archivo excel",
             filetypes=(("Excel Files", "*.xlsx"), ("All Files", "*.*"))
         )
         if file_path:
@@ -104,7 +104,7 @@ class BatchPresentationGeneratorApp():
                 prs.save(output_path_pptx)
                 self.convert_to_pdf(output_path_pptx)
 
-            messagebox.showinfo("Success", "Presentations generated successfully!")
+            #messagebox.showinfo("Success", "Presentations generated successfully!")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")
 
@@ -132,6 +132,6 @@ class BatchPresentationGeneratorApp():
             presentation.Close()
             powerpoint.Quit()
 
-            messagebox.showinfo("Success", f"PDF saved successfully: {pdf_path}")
+            #messagebox.showinfo("Success", f"PDF saved successfully: {pdf_path}")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while converting to PDF: {str(e)}")
