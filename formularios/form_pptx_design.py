@@ -1,8 +1,11 @@
+import os
+import time
 import customtkinter as ctk
 from config import COLOR_CUERPO_PRINCIPAL
 from tkinter import filedialog, messagebox
 from pptx import Presentation
 from pptx_replace import replace_text
+import comtypes.client
 
 class FormularioPptxDesign():
 
@@ -104,23 +107,52 @@ class FormularioPptxDesign():
             for key, value in context.items():
                 replace_text(prs, f"{{{key}}}", value)
 
-            # Guardar la presentación modificada
-            output_path = filedialog.asksaveasfilename(
+            # Guardar la presentación modificada en .pptx
+            output_path_pptx = filedialog.asksaveasfilename(
                 defaultextension=".pptx",
                 filetypes=(("PowerPoint Files", "*.pptx"), ("All Files", "*.*")),
                 title="Save Generated Presentation"
             )
-            if output_path:
-                prs.save(output_path)
-                messagebox.showinfo("Success", f"Presentation saved successfully: {output_path}")
+            if output_path_pptx:
+                prs.save(output_path_pptx)
+                messagebox.showinfo("Success", f"Presentation saved successfully: {output_path_pptx}")
+                time.sleep(2)
+                self.convert_to_pdf(output_path_pptx)  # Llamar al método para convertir a PDF
                 self.clear_form()  # Limpiar el formulario después de guardar
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+    def convert_to_pdf(self, pptx_path):
+        """Convertir la presentación pptx a PDF."""
+        try:
+            # Cerrar cualquier instancia anterior de PowerPoint que pudiera estar abierta
+            powerpoint = comtypes.client.CreateObject("PowerPoint.Application")
+            powerpoint.Visible = 1
+
+            # Normaliza la ruta (por si acaso hay problemas con las barras)
+            #pptx_path = pptx_path.replace("\\", "/")
+            pptx_path = os.path.normpath(pptx_path)  # Convertir la ruta a formato correcto para Windows
+            print(pptx_path)
+
+            # Abre la presentación
+            presentation = powerpoint.Presentations.Open(pptx_path)
+
+            print(presentation)
+            # Generar ruta para PDF
+            pdf_path = pptx_path.replace(".pptx", ".pdf")
+
+            # Guardar como PDF (32 indica el formato PDF)
+            presentation.SaveAs(pdf_path, 32)
+
+            # Cierra la presentación y PowerPoint
+            presentation.Close()
+            powerpoint.Quit()
+
+            messagebox.showinfo("Success", f"PDF saved successfully: {pdf_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while converting to PDF: {str(e)}")
 
     def clear_form(self):
         """Función para limpiar el formulario."""
         for var in self.fields.values():
             var.set("")  # Limpiar todos los campos
-
-    # Si es necesario, puedes agregar más métodos o ajustes aquí.
-

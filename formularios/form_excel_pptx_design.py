@@ -6,6 +6,7 @@ from pptx import Presentation
 import pandas as pd
 import os
 from pptx_replace import replace_text
+import comtypes.client
 
 class BatchPresentationGeneratorApp():
 
@@ -99,9 +100,38 @@ class BatchPresentationGeneratorApp():
                     replace_text(prs, f"{{{key}}}", value)
 
                 # Construir la ruta completa del archivo de salida
-                output_path = os.path.join(output_folder, f"{row['nombre']}.pptx")
-                prs.save(output_path)
+                output_path_pptx = os.path.join(output_folder, f"{row['nombre']}.pptx")
+                prs.save(output_path_pptx)
+                self.convert_to_pdf(output_path_pptx)
 
             messagebox.showinfo("Success", "Presentations generated successfully!")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")
+
+    def convert_to_pdf(self, pptx_path):
+        """Convertir la presentación pptx a PDF."""
+        try:
+            # Cerrar cualquier instancia anterior de PowerPoint que pudiera estar abierta
+            powerpoint = comtypes.client.CreateObject("PowerPoint.Application")
+            powerpoint.Visible = 1
+
+            # Normaliza la ruta
+            pptx_path = os.path.normpath(pptx_path)
+            print(pptx_path)
+
+            # Abre la presentación
+            presentation = powerpoint.Presentations.Open(pptx_path)
+
+            # Generar ruta para PDF
+            pdf_path = pptx_path.replace(".pptx", ".pdf")
+
+            # Guardar como PDF (32 indica el formato PDF)
+            presentation.SaveAs(pdf_path, 32)
+
+            # Cierra la presentación y PowerPoint
+            presentation.Close()
+            powerpoint.Quit()
+
+            messagebox.showinfo("Success", f"PDF saved successfully: {pdf_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while converting to PDF: {str(e)}")
