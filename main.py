@@ -4,6 +4,17 @@ from PIL import Image, ImageTk
 import tkinter as tk
 import json
 import os
+import sys
+
+def resource_path(relative_path):
+    """Obtiene la ruta de acceso al recurso en un ejecutable empaquetado con PyInstaller"""
+    if getattr(sys, 'frozen', False):
+        # Ejecutando como un ejecutable empaquetado
+        base_path = sys._MEIPASS
+    else:
+        # Ejecutando desde el código fuente
+        base_path = os.path.dirname(__file__)
+    return os.path.join(base_path, relative_path)
 
 # Clase para el formulario de login
 class LoginForm(ctk.CTk):
@@ -23,8 +34,10 @@ class LoginForm(ctk.CTk):
         self.image_frame = ctk.CTkFrame(self.main_frame)
         self.image_frame.grid(row=0, column=0, padx=10, pady=10, sticky="w")  # Ajustamos para la izquierda
 
+        # Obtener la ruta dinámica de la imagen
+        image_path = resource_path('imagenes/qhse.jpg')
+
         # Cargar la imagen
-        image_path = "./imagenes/qhse.jpg"
         self.bg_image = Image.open(image_path)
         self.bg_image = self.bg_image.resize((300, 400), Image.Resampling.LANCZOS)
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
@@ -66,14 +79,16 @@ class LoginForm(ctk.CTk):
 
     def load_users(self):
         """Carga los usuarios desde el archivo JSON."""
-        if not os.path.exists('data.json'):
+        path = resource_path('data.json')
+        if not os.path.exists(path):
             return {}
-        with open('data.json', 'r') as file:
+        with open(path, 'r') as file:
             return json.load(file)
 
     def save_users(self):
         """Guarda los usuarios en el archivo JSON."""
-        with open('data.json', 'w') as file:
+        path = resource_path('data.json')
+        with open(path, 'w') as file:
             json.dump(self.users, file, indent=4)
 
     def login(self):
@@ -146,7 +161,6 @@ class UserManagementForm(ctk.CTkToplevel):
             self.result_label.configure(text="Usuario guardado exitosamente", text_color="green")
         else:
             self.result_label.configure(text="Debe ingresar un usuario y una contraseña", text_color="red")
-
 
 # Ejecutar la aplicación de login
 if __name__ == "__main__":

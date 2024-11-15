@@ -7,6 +7,7 @@ import pandas as pd
 import os
 from pptx_replace import replace_text
 import comtypes.client
+import comtypes.stream
 
 class BatchPresentationGeneratorApp():
 
@@ -91,7 +92,11 @@ class BatchPresentationGeneratorApp():
                     'curp': row['curp'],
                     'categoria': row['categoria'],
                     'curso': row['curso'],
-                    'folio': row['folio']
+                    'folio': row['folio'],
+                    'horas': str(row['horas']),
+                    'dias': str(row['dias']),
+                    'mes': row['mes'],
+                    'año': str(row['año'])
                 }
 
                 # Replace text in slides with context data
@@ -100,11 +105,11 @@ class BatchPresentationGeneratorApp():
                     replace_text(prs, f"{{{key}}}", value)
 
                 # Construir la ruta completa del archivo de salida
-                output_path_pptx = os.path.join(output_folder, f"{row['nombre']}.pptx")
+                output_path_pptx = os.path.join(output_folder, f"{row['nombre']}_{index}.pptx")
                 prs.save(output_path_pptx)
                 self.convert_to_pdf(output_path_pptx)
 
-            #messagebox.showinfo("Success", "Presentations generated successfully!")
+            messagebox.showinfo("Success", "Presentacion generada correctamente.!")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")
 

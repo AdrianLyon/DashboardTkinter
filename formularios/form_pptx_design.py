@@ -6,6 +6,7 @@ from tkinter import filedialog, messagebox
 from pptx import Presentation
 from pptx_replace import replace_text
 import comtypes.client
+import comtypes.stream
 
 class FormularioPptxDesign():
 
@@ -36,7 +37,11 @@ class FormularioPptxDesign():
             "CURP": ctk.StringVar(),
             "Categoria": ctk.StringVar(),
             "Curso": ctk.StringVar(),
-            "folio": ctk.StringVar()
+            "folio": ctk.StringVar(),
+            "horas": ctk.StringVar(),
+            "dias": ctk.StringVar(),
+            "mes": ctk.StringVar(),
+            "año": ctk.StringVar()
         }
 
         row = 0
@@ -48,6 +53,18 @@ class FormularioPptxDesign():
             if label == "Nombre":
                 self.add_placeholder(entry, "Empezar con nombres")  # Añadir placeholder
                 entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
+            elif label == "horas":
+                self.add_placeholder(entry, "ejemplo: 10 hrs")  # Añadir placeholder
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get()))
+            elif label == "dias":
+                self.add_placeholder(entry, "ejemplo: 7 y 8")  # Añadir placeholder
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get()))
+            elif label == "mes":
+                self.add_placeholder(entry, "ejemplo: marzo")  # Añadir placeholder
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get()))
+            elif label == "año":
+                self.add_placeholder(entry, "ejemplo: 2024")  # Añadir placeholder
+                entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get()))
             else:
                 # Convertir el texto a mayúsculas mientras se escribe
                 entry.bind('<KeyRelease>', lambda e, var=var: var.set(var.get().upper()))
