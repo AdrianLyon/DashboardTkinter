@@ -73,11 +73,11 @@ class FormularioPptxDesign():
             row += 1
 
         # Botón para abrir la plantilla pptx
-        self.btn_open = ctk.CTkButton(self.barra_inferior, text="Select PPTX Template", command=self.open_template)
+        self.btn_open = ctk.CTkButton(self.barra_inferior, text="Selecciona el power point de la constancia", command=self.open_template)
         self.btn_open.grid(row=row, column=0, padx=10, pady=20, columnspan=2)
 
         # Botón para generar pptx
-        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Generate Presentation", command=self.generate_presentation)
+        self.btn_generate = ctk.CTkButton(self.barra_inferior, text="Genera la presentacion", command=self.generate_presentation)
         self.btn_generate.grid(row=row+1, column=0, padx=10, pady=10, columnspan=2)
 
         self.ppt_template = None
